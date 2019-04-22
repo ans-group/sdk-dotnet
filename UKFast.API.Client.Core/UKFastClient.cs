@@ -15,6 +15,11 @@ namespace UKFast.API.Client
         public IConnection Connection { get; }
         public ClientConfig Config { get; }
 
+        /// <summary>
+        /// GetPaginatedAsyncFunc defines a delegate for returning an instance of Paginated from given request parameters
+        /// </summary>
+        /// <typeparam name="T">Type of model</typeparam>
+        /// <param name="parameters">Request parameters</param>
         public delegate Task<Paginated<T>> GetPaginatedAsyncFunc<T>(ClientRequestParameters parameters) where T : ModelBase;
 
         public UKFastClient(IConnection connection)
@@ -29,6 +34,13 @@ namespace UKFast.API.Client
             this.Config = config;
         }
 
+        /// <summary>
+        /// GetAllAsync retrieves all pages for provided func
+        /// </summary>
+        /// <typeparam name="T">Type of model</typeparam>
+        /// <param name="func">Implementation of GetPaginatedAsyncFunc</param>
+        /// <param name="parameters">Request parameters</param>
+        /// <returns></returns>
         public async Task<IList<T>> GetAllAsync<T>(GetPaginatedAsyncFunc<T> func, ClientRequestParameters parameters = null) where T : ModelBase
         {
             parameters = InitialisePaginationParameters(parameters);
@@ -58,6 +70,9 @@ namespace UKFast.API.Client
             return items;
         }
 
+        /// <summary>
+        /// GetPaginatedAsync returns an instance of Paginated, whilst validating the status code of the response
+        /// </summary>
         public async Task<Paginated<T>> GetPaginatedAsync<T>(string resource, ClientRequestParameters parameters = null) where T : ModelBase
         {
             parameters = InitialisePaginationParameters(parameters);
@@ -67,21 +82,118 @@ namespace UKFast.API.Client
             return new Paginated<T>(this, resource, parameters, response);
         }
 
-        public async Task<IList<T>> GetListAsync<T>(string resource, ClientRequestParameters parameters = null)
-        {
-            ClientResponse<IList<T>> response = await GetResponseAsync<IList<T>>(resource, parameters);
-            return response.Body.Data;
-        }
-
+        /// <summary>
+        /// GetAsync is a wrapper around the underlying Connection's GetAsync method, which validates the status code of the response
+        /// </summary>
         public async Task<T> GetAsync<T>(string resource, ClientRequestParameters parameters = null)
         {
             ClientResponse<T> response = await GetResponseAsync<T>(resource, parameters);
             return response.Body.Data;
         }
 
+        /// <summary>
+        /// PostAsync is a wrapper around the underlying Connection's PostAsync method, which validates the status code of the response
+        /// </summary>
+        public async Task<T> PostAsync<T>(string resource, object body = null)
+        {
+            ClientResponse<T> response = await PostResponseAsync<T>(resource, body);
+            return response.Body.Data;
+        }
+
+        /// <summary>
+        /// PostAsync is a wrapper around the underlying Connection's PostAsync method, which validates the status code of the response
+        /// </summary>
+        public async Task PostAsync(string resource, object body = null)
+        {
+            await PostResponseAsync<object>(resource, body);
+        }
+
+        /// <summary>
+        /// PutAsync is a wrapper around the underlying Connection's PutAsync method, which validates the status code of the response
+        /// </summary>
+        public async Task<T> PutAsync<T>(string resource, object body = null)
+        {
+            ClientResponse<T> response = await PutResponseAsync<T>(resource, body);
+            return response.Body.Data;
+        }
+
+        /// <summary>
+        /// PutAsync is a wrapper around the underlying Connection's PutAsync method, which validates the status code of the response
+        /// </summary>
+        public async Task PutAsync(string resource, object body = null)
+        {
+            await PutResponseAsync<object>(resource, body);
+        }
+
+        /// <summary>
+        /// PatchAsync is a wrapper around the underlying Connection's PatchAsync method, which validates the status code of the response
+        /// </summary>
+        public async Task<T> PatchAsync<T>(string resource, object body = null)
+        {
+            ClientResponse<T> response = await PatchResponseAsync<T>(resource, body);
+            return response.Body.Data;
+        }
+
+        /// <summary>
+        /// PatchAsync is a wrapper around the underlying Connection's PatchAsync method, which validates the status code of the response
+        /// </summary>
+        public async Task PatchAsync(string resource, object body = null)
+        {
+            await PatchResponseAsync<object>(resource, body);
+        }
+
+        /// <summary>
+        /// DeleteAsync is a wrapper around the underlying Connection's DeleteAsync method, which validates the status code of the response
+        /// </summary>
+        public async Task<T> DeleteAsync<T>(string resource, object body = null)
+        {
+            ClientResponse<T> response = await DeleteResponseAsync<T>(resource, body);
+            return response.Body.Data;
+        }
+
+        /// <summary>
+        /// DeleteAsync is a wrapper around the underlying Connection's DeleteAsync method, which validates the status code of the response
+        /// </summary>
+        public async Task DeleteAsync(string resource, object body = null)
+        {
+            await DeleteResponseAsync<object>(resource, body);
+        }
+
         protected virtual async Task<ClientResponse<T>> GetResponseAsync<T>(string resource, ClientRequestParameters parameters = null)
         {
             ClientResponse<T> response = await this.Connection.GetAsync<T>(resource, parameters);
+            response.Validate();
+
+            return response;
+        }
+
+        public virtual async Task<ClientResponse<T>> PostResponseAsync<T>(string resource, object body = null)
+        {
+            ClientResponse<T> response = await this.Connection.PostAsync<T>(resource, body);
+            response.Validate();
+
+            return response;
+        }
+
+        public virtual async Task<ClientResponse<T>> PutResponseAsync<T>(string resource, object body = null)
+        {
+            ClientResponse<T> response = await this.Connection.PutAsync<T>(resource, body);
+            response.Validate();
+
+            return response;
+        }
+
+        public virtual async Task<ClientResponse<T>> PatchResponseAsync<T>(string resource, object body = null)
+        {
+            ClientResponse<T> response = await this.Connection.PatchAsync<T>(resource, body);
+            response.Validate();
+
+            return response;
+        }
+
+        public virtual async Task<ClientResponse<T>> DeleteResponseAsync<T>(string resource, object body = null)
+        {
+            ClientResponse<T> response = await this.Connection.DeleteAsync<T>(resource, body);
             response.Validate();
 
             return response;

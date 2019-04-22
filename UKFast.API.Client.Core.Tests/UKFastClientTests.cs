@@ -207,26 +207,6 @@ namespace UKFast.API.Client.Core.Tests
         }
 
         [TestMethod]
-        public async Task GetListAsync_ExpectedData()
-        {
-            var mockResponse = GetListResponse(new List<ModelBase>()
-            {
-                new ModelBase(),
-                new ModelBase()
-            }, 3);
-            mockResponse.StatusCode = 200;
-
-            IConnection connection = NSubstitute.Substitute.For<IConnection>();
-            connection.GetAsync<IList<ModelBase>>("testresource").Returns(Task.Run(() => mockResponse));
-
-            TestUKFastClient client = new TestUKFastClient(connection);
-
-            var result = await client.GetListAsync<ModelBase>("testresource");
-
-            Assert.AreEqual(mockResponse.Body.Data, result);
-        }
-
-        [TestMethod]
         public async Task GetAsync_ExpectedData()
         {
             var mockResponse = GetSingleResponse(new ModelBase(), 3);

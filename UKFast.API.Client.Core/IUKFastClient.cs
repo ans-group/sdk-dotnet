@@ -13,7 +13,14 @@ namespace UKFast.API.Client
         IConnection Connection { get; }
         Task<IList<T>> GetAllAsync<T>(UKFastClient.GetPaginatedAsyncFunc<T> func, ClientRequestParameters parameters = null) where T : ModelBase;
         Task<Paginated<T>> GetPaginatedAsync<T>(string resource, ClientRequestParameters parameters = null) where T : ModelBase;
-        Task<IList<T>> GetListAsync<T>(string resource, ClientRequestParameters parameters = null);
         Task<T> GetAsync<T>(string resource, ClientRequestParameters parameters = null);
+        Task<T> PostAsync<T>(string resource, object body = null);
+        Task PostAsync(string resource, object body = null);
+        Task<T> PutAsync<T>(string resource, object body = null);
+        Task PutAsync(string resource, object body = null);
+        Task<T> PatchAsync<T>(string resource, object body = null);
+        Task PatchAsync(string resource, object body = null);
+        Task<T> DeleteAsync<T>(string resource, object body = null);
+        Task DeleteAsync(string resource, object body = null);
     }
 }
