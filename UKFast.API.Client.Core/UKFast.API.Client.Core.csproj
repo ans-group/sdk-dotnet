@@ -4,6 +4,14 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>UKFast.API.Client</RootNamespace>
     <AssemblyName>UKFast.API.Client.Core</AssemblyName>
+    <Authors>UKFast</Authors>
+    <Company>UKFast</Company>
+    <PackageTags>ukfast, sdk, client</PackageTags>
+    <SignAssembly>false</SignAssembly>
+    <PackageProjectUrl>https://github.com/ukfast/sdk-dotnet</PackageProjectUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/ukfast/sdk-dotnet/master/LICENSE</PackageLicenseUrl>
+    <Copyright />
+    <Description>Core client for interacting with UKFast products and services</Description>
   </PropertyGroup>
 
   <ItemGroup>
