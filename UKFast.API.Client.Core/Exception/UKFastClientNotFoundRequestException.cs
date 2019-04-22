@@ -7,6 +7,6 @@ namespace UKFast.API.Client.Exception
 {
     public class UKFastClientNotFoundRequestException : Client.Exception.UKFastClientRequestException
     {
-        public UKFastClientNotFoundRequestException(int statusCode, IEnumerable<ClientResponseError> errors) : base(statusCode, errors) { }
+        public UKFastClientNotFoundRequestException(IEnumerable<ClientResponseError> errors) : base(404, errors) { }
     }
 }

@@ -15,7 +15,7 @@ namespace UKFast.API.Client.Response
             {
                 if (this.StatusCode == 404)
                 {
-                    throw new Exception.UKFastClientNotFoundRequestException(this.StatusCode, this.Body?.Errors);
+                    throw new Exception.UKFastClientNotFoundRequestException(this.Body?.Errors);
                 }
                 else
                 {
