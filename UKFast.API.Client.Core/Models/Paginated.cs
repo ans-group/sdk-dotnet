@@ -36,9 +36,9 @@ namespace UKFast.API.Client.Models
         {
             this.Client = client;
             this.Resource = resource;
-            this.Parameters = parameters;
-            this.Items = response.Body.Data;
-            this.Pagination = response.Body.Metadata.Pagination;
+            this.Parameters = parameters ?? new ClientRequestParameters();
+            this.Items = response?.Body?.Data;
+            this.Pagination = response?.Body?.Metadata?.Pagination ?? new ClientResponseMetadataPagination();
         }
 
         public async Task<Paginated<T>> Next()
