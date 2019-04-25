@@ -91,5 +91,38 @@ namespace UKFast.API.Client.Core.Tests.Models
 
             Assert.AreEqual(10, last.CurrentPage);
         }
+
+        [TestMethod]
+        public void TotalPages_ReturnsTotalPages()
+        {
+            ClientResponse<IList<ModelBase>> paginatedResponse = UKFastClientTests.GetListResponse(new List<ModelBase>(), 10);
+            paginatedResponse.Body.Metadata.Pagination.TotalPages = 99;
+
+            Paginated<ModelBase> paginated = new Paginated<ModelBase>(null, "testresource", new ClientRequestParameters() { Pagination = new ClientRequestPagination() }, paginatedResponse);
+
+            Assert.AreEqual(99, paginated.TotalPages);
+        }
+
+        [TestMethod]
+        public void CurrentPage_ReturnsCurrentPage()
+        {
+            ClientResponse<IList<ModelBase>> paginatedResponse = UKFastClientTests.GetListResponse(new List<ModelBase>(), 10);
+            paginatedResponse.Body.Metadata.Pagination.CurrentPage = 99;
+
+            Paginated<ModelBase> paginated = new Paginated<ModelBase>(null, "testresource", new ClientRequestParameters() { Pagination = new ClientRequestPagination() }, paginatedResponse);
+
+            Assert.AreEqual(99, paginated.CurrentPage);
+        }
+
+        [TestMethod]
+        public void Total_ReturnsTotalItems()
+        {
+            ClientResponse<IList<ModelBase>> paginatedResponse = UKFastClientTests.GetListResponse(new List<ModelBase>(), 10);
+            paginatedResponse.Body.Metadata.Pagination.Total = 99;
+
+            Paginated<ModelBase> paginated = new Paginated<ModelBase>(null, "testresource", new ClientRequestParameters() { Pagination = new ClientRequestPagination() }, paginatedResponse);
+
+            Assert.AreEqual(99, paginated.Total);
+        }
     }
 }

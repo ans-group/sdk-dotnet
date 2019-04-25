@@ -32,6 +32,14 @@ namespace UKFast.API.Client.Models
             }
         }
 
+        public int Total
+        {
+            get
+            {
+                return this.Pagination.Total;
+            }
+        }
+
         public Paginated(IUKFastClient client, string resource, ClientRequestParameters parameters, ClientResponse<IList<T>> response)
         {
             this.Client = client;
