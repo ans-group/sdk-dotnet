@@ -9,9 +9,11 @@ namespace UKFast.API.Client.Request
         EQ,
         NEQ,
         LK,
+        NLK,
         GT,
         LT,
-        IN
+        IN,
+        NIN
     }
 
     public class ClientRequestFiltering
