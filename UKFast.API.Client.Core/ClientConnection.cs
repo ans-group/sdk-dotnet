@@ -20,7 +20,8 @@ namespace UKFast.API.Client
         private bool _disposed = false;
         const string APIURI = "api.ukfast.io";
         const string APISCHEME = "https";
-        const string APIAGENT = "ukfast-api-client-dotnet";
+        const string APIAGENT = "ukfast-sdk-dotnet";
+        const int VERSIONMAJOR = 1;
 
         public HttpClient Client { get; set; }
         private UKFastCredentials Credentials { get; set; }
@@ -49,7 +50,7 @@ namespace UKFast.API.Client
         {
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri($"{APISCHEME}://{APIURI}");
-            client.DefaultRequestHeaders.UserAgent.ParseAdd(APIAGENT);
+            client.DefaultRequestHeaders.UserAgent.ParseAdd($"{APIAGENT}/{VERSIONMAJOR}");
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
             return client;
