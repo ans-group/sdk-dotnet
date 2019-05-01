@@ -1,5 +1,8 @@
 # sdk-dotnet
 
+[![Build Status](https://travis-ci.org/ukfast/sdk-dotnet.svg?branch=master)](https://travis-ci.org/ukfast/sdk-dotnet)
+[![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 This is the base client for interacting with UKFast APIs from .NET applications targetting .NET Standard 2.0.
 
 We strongly recommend against using this client directly, and instead using UKFast .NET SDKs available on Github [here](https://github.com/ukfast?utf8=%E2%9C%93&q=sdk-dotnet)
