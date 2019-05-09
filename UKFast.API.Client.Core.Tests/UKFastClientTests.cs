@@ -221,5 +221,177 @@ namespace UKFast.API.Client.Core.Tests
 
             Assert.AreEqual(mockResponse.Body.Data, result);
         }
+
+        [TestMethod]
+        public async Task PostAsyncGeneric_ExpectedCall()
+        {
+            ModelBase model = new ModelBase();
+
+            var mockResponse = GetSingleResponse(model, 0);
+            mockResponse.StatusCode = 200;
+
+            IConnection connection = NSubstitute.Substitute.For<IConnection>();
+            connection.PostAsync<ModelBase>("testresource").Returns(Task.Run(() => mockResponse));
+
+            TestUKFastClient client = new TestUKFastClient(connection);
+
+            var result = await client.PostAsync<ModelBase>("testresource");
+
+            Assert.AreEqual(model, result);
+            await connection.Received().PostAsync<ModelBase>("testresource");
+        }
+
+        [TestMethod]
+        public async Task PostAsync_ExpectedCall()
+        {
+            IConnection connection = NSubstitute.Substitute.For<IConnection>();
+            connection.PostAsync<object>("testresource").Returns(Task.Run(() => new ClientResponse<object>()
+            {
+                StatusCode = 200
+            }));
+
+            TestUKFastClient client = new TestUKFastClient(connection);
+
+            await client.PostAsync("testresource");
+
+            await connection.Received().PostAsync<object>("testresource");
+        }
+
+        [TestMethod]
+        public async Task PutAsyncGeneric_ExpectedCall()
+        {
+            ModelBase model = new ModelBase();
+
+            var mockResponse = GetSingleResponse(model, 0);
+            mockResponse.StatusCode = 200;
+
+            IConnection connection = NSubstitute.Substitute.For<IConnection>();
+            connection.PutAsync<ModelBase>("testresource").Returns(Task.Run(() => mockResponse));
+
+            TestUKFastClient client = new TestUKFastClient(connection);
+
+            var result = await client.PutAsync<ModelBase>("testresource");
+
+            Assert.AreEqual(model, result);
+            await connection.Received().PutAsync<ModelBase>("testresource");
+        }
+
+        [TestMethod]
+        public async Task PutAsync_ExpectedCall()
+        {
+            IConnection connection = NSubstitute.Substitute.For<IConnection>();
+            connection.PutAsync<object>("testresource").Returns(Task.Run(() => new ClientResponse<object>()
+            {
+                StatusCode = 200
+            }));
+
+            TestUKFastClient client = new TestUKFastClient(connection);
+
+            await client.PutAsync("testresource");
+
+            await connection.Received().PutAsync<object>("testresource");
+        }
+
+        [TestMethod]
+        public async Task PatchAsyncGeneric_ExpectedCall()
+        {
+            ModelBase model = new ModelBase();
+
+            var mockResponse = GetSingleResponse(model, 0);
+            mockResponse.StatusCode = 200;
+
+            IConnection connection = NSubstitute.Substitute.For<IConnection>();
+            connection.PatchAsync<ModelBase>("testresource").Returns(Task.Run(() => mockResponse));
+
+            TestUKFastClient client = new TestUKFastClient(connection);
+
+            var result = await client.PatchAsync<ModelBase>("testresource");
+
+            Assert.AreEqual(model, result);
+            await connection.Received().PatchAsync<ModelBase>("testresource");
+        }
+
+        [TestMethod]
+        public async Task PatchAsync_ExpectedCall()
+        {
+            IConnection connection = NSubstitute.Substitute.For<IConnection>();
+            connection.PatchAsync<object>("testresource").Returns(Task.Run(() => new ClientResponse<object>()
+            {
+                StatusCode = 200
+            }));
+
+            TestUKFastClient client = new TestUKFastClient(connection);
+
+            await client.PatchAsync("testresource");
+
+            await connection.Received().PatchAsync<object>("testresource");
+        }
+
+        [TestMethod]
+        public async Task DeleteAsyncGeneric_ExpectedCall()
+        {
+            ModelBase model = new ModelBase();
+
+            var mockResponse = GetSingleResponse(model, 0);
+            mockResponse.StatusCode = 200;
+
+            IConnection connection = NSubstitute.Substitute.For<IConnection>();
+            connection.DeleteAsync<ModelBase>("testresource").Returns(Task.Run(() => mockResponse));
+
+            TestUKFastClient client = new TestUKFastClient(connection);
+
+            var result = await client.DeleteAsync<ModelBase>("testresource");
+
+            Assert.AreEqual(model, result);
+            await connection.Received().DeleteAsync<ModelBase>("testresource");
+        }
+
+        [TestMethod]
+        public async Task DeleteAsync_ExpectedCall()
+        {
+            IConnection connection = NSubstitute.Substitute.For<IConnection>();
+            connection.DeleteAsync<object>("testresource").Returns(Task.Run(() => new ClientResponse<object>()
+            {
+                StatusCode = 200
+            }));
+
+            TestUKFastClient client = new TestUKFastClient(connection);
+
+            await client.DeleteAsync("testresource");
+
+            await connection.Received().DeleteAsync<object>("testresource");
+        }
+
+        [TestMethod]
+        public void GetDataOrDefault_NullBody_ReturnsNull()
+        {
+            var response = new ClientResponse<ModelBase>()
+            {
+                Body = null
+            };
+
+            TestUKFastClient client = new TestUKFastClient(null);
+            var result = client.GetDataOrDefault_Exposed(response);
+
+            Assert.IsNull(result);
+        }
+
+        [TestMethod]
+        public void GetDataOrDefault_PopulatedBody_ReturnsBodyData()
+        {
+            var model = new ModelBase();
+            var response = new ClientResponse<ModelBase>()
+            {
+                Body = new ClientResponseBody<ModelBase>()
+                {
+                    Data = model
+                }
+            };
+
+            TestUKFastClient client = new TestUKFastClient(null);
+            var result = client.GetDataOrDefault_Exposed(response);
+
+            Assert.AreEqual(model, result);
+        }
     }
 }
