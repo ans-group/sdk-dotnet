@@ -88,7 +88,7 @@ namespace UKFast.API.Client
         public async Task<T> GetAsync<T>(string resource, ClientRequestParameters parameters = null)
         {
             ClientResponse<T> response = await GetResponseAsync<T>(resource, parameters);
-            return response.Body.Data;
+            return GetDataOrDefault(response);
         }
 
         /// <summary>
@@ -97,7 +97,7 @@ namespace UKFast.API.Client
         public async Task<T> PostAsync<T>(string resource, object body = null)
         {
             ClientResponse<T> response = await PostResponseAsync<T>(resource, body);
-            return response.Body.Data;
+            return GetDataOrDefault(response);
         }
 
         /// <summary>
@@ -114,7 +114,7 @@ namespace UKFast.API.Client
         public async Task<T> PutAsync<T>(string resource, object body = null)
         {
             ClientResponse<T> response = await PutResponseAsync<T>(resource, body);
-            return response.Body.Data;
+            return GetDataOrDefault(response);
         }
 
         /// <summary>
@@ -131,7 +131,7 @@ namespace UKFast.API.Client
         public async Task<T> PatchAsync<T>(string resource, object body = null)
         {
             ClientResponse<T> response = await PatchResponseAsync<T>(resource, body);
-            return response.Body.Data;
+            return GetDataOrDefault(response);
         }
 
         /// <summary>
@@ -148,7 +148,7 @@ namespace UKFast.API.Client
         public async Task<T> DeleteAsync<T>(string resource, object body = null)
         {
             ClientResponse<T> response = await DeleteResponseAsync<T>(resource, body);
-            return response.Body.Data;
+            return GetDataOrDefault(response);
         }
 
         /// <summary>
@@ -167,7 +167,7 @@ namespace UKFast.API.Client
             return response;
         }
 
-        public virtual async Task<ClientResponse<T>> PostResponseAsync<T>(string resource, object body = null)
+        protected virtual async Task<ClientResponse<T>> PostResponseAsync<T>(string resource, object body = null)
         {
             ClientResponse<T> response = await this.Connection.PostAsync<T>(resource, body);
             response.Validate();
@@ -175,7 +175,7 @@ namespace UKFast.API.Client
             return response;
         }
 
-        public virtual async Task<ClientResponse<T>> PutResponseAsync<T>(string resource, object body = null)
+        protected virtual async Task<ClientResponse<T>> PutResponseAsync<T>(string resource, object body = null)
         {
             ClientResponse<T> response = await this.Connection.PutAsync<T>(resource, body);
             response.Validate();
@@ -183,7 +183,7 @@ namespace UKFast.API.Client
             return response;
         }
 
-        public virtual async Task<ClientResponse<T>> PatchResponseAsync<T>(string resource, object body = null)
+        protected virtual async Task<ClientResponse<T>> PatchResponseAsync<T>(string resource, object body = null)
         {
             ClientResponse<T> response = await this.Connection.PatchAsync<T>(resource, body);
             response.Validate();
@@ -191,12 +191,17 @@ namespace UKFast.API.Client
             return response;
         }
 
-        public virtual async Task<ClientResponse<T>> DeleteResponseAsync<T>(string resource, object body = null)
+        protected virtual async Task<ClientResponse<T>> DeleteResponseAsync<T>(string resource, object body = null)
         {
             ClientResponse<T> response = await this.Connection.DeleteAsync<T>(resource, body);
             response.Validate();
 
             return response;
+        }
+
+        protected virtual T GetDataOrDefault<T>(ClientResponse<T> response)
+        {
+            return (response.Body != null) ? response.Body.Data : default(T);
         }
 
         protected virtual ClientConfig GetDefaultConfig()

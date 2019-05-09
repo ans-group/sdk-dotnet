@@ -75,6 +75,11 @@ namespace UKFast.API.Client.Core.Tests
         public TestUKFastClient(IConnection connection) : base(connection) { }
 
         public TestUKFastClient(IConnection connection, ClientConfig config) : base(connection, config) { }
+
+        public T GetDataOrDefault_Exposed<T>(ClientResponse<T> response)
+        {
+            return this.GetDataOrDefault(response);
+        }
     }
 
     public class TestClientResponsePaginatedGenerator
