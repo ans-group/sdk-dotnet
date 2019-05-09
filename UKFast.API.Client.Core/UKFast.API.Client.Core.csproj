@@ -12,9 +12,9 @@
     <PackageLicenseUrl>https://raw.githubusercontent.com/ukfast/sdk-dotnet/master/LICENSE</PackageLicenseUrl>
     <Copyright />
     <Description>Core client for interacting with UKFast products and services</Description>
-    <AssemblyVersion>1.0.2.0</AssemblyVersion>
-    <FileVersion>1.0.2.0</FileVersion>
-    <Version>1.0.2</Version>
+    <AssemblyVersion>1.0.3.0</AssemblyVersion>
+    <FileVersion>1.0.3.0</FileVersion>
+    <Version>1.0.3</Version>
   </PropertyGroup>
 
   <ItemGroup>
