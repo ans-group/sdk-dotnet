@@ -11,7 +11,6 @@ namespace UKFast.API.Client
 {
     public class UKFastClient : IUKFastClient
     {
-        protected const int PAGINATION_DEFAULT_PERPAGE = 15;
         public IConnection Connection { get; }
         public ClientConfig Config { get; }
 
