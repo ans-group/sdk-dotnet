@@ -170,6 +170,38 @@ namespace UKFast.API.Client.Core.Tests
         }
 
         [TestMethod]
+        public async Task InvokeAsync_ExpectedResponseHeaders()
+        {
+            TestHttpMessageHandler handler = new TestHttpMessageHandler
+            {
+                RequestHandler = (HttpRequestMessage message) =>
+                {
+                    Assert.AreEqual("POST", message.Method.Method);
+                    string body = Task.Run(() => message.Content.ReadAsStringAsync()).Result;
+                    Assert.AreEqual("{\"testproperty\":\"testvalue\"}", body);
+                },
+                Headers = new Dictionary<string, string>()
+                {
+                    { "Test-Header-1", "TestValue1" }
+                }
+            };
+
+            ClientRequest request = new ClientRequest()
+            {
+                Resource = "testresource",
+                Method = ClientRequestMethod.POST,
+                Body = new { testproperty = "testvalue" }
+            };
+
+            TestClientConnection connection = new TestClientConnection(handler);
+
+            var response = await connection.InvokeAsync<object>(request);
+
+            Assert.AreEqual(1, response.Headers.Count);
+            Assert.AreEqual("TestValue1", response.Headers["Test-Header-1"].First());
+        }
+
+        [TestMethod]
         public async Task InvokeAsync_InvalidJsonResponse_ThrowsUKFastClientRequestException()
         {
             TestHttpMessageHandler handler = new TestHttpMessageHandler

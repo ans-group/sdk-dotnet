@@ -28,7 +28,7 @@ namespace UKFast.API.Client.Models
         {
             get
             {
-                return this.Pagination.CurrentPage;
+                return (this.Parameters.Pagination.Page > 0) ? this.Parameters.Pagination.Page : 1;
             }
         }
 
@@ -45,6 +45,7 @@ namespace UKFast.API.Client.Models
             this.Client = client;
             this.Resource = resource;
             this.Parameters = parameters ?? new ClientRequestParameters();
+            this.Parameters.Pagination = this.Parameters.Pagination ?? new ClientRequestPagination();
             this.Items = response?.Body?.Data;
             this.Pagination = response?.Body?.Metadata?.Pagination ?? new ClientResponseMetadataPagination();
         }

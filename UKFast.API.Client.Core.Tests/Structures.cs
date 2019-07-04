@@ -56,17 +56,28 @@ namespace UKFast.API.Client.Core.Tests
     {
         public System.Net.HttpStatusCode StatusCode { get; set; }
         public string Content { get; set; }
+        public Dictionary<string, string> Headers { get; set; }
         public RequestHandler RequestHandler { get; set; }
 
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             this.RequestHandler?.Invoke(request);
 
-            return Task.FromResult(new HttpResponseMessage()
+            HttpResponseMessage responseMessage = new HttpResponseMessage()
             {
                 StatusCode = this.StatusCode,
                 Content = new StringContent(this.Content ?? "", Encoding.UTF8, "application/json")
-            });
+            };
+
+            if (this.Headers != null)
+            {
+                foreach (KeyValuePair<string, string> header in this.Headers)
+                {
+                    responseMessage.Headers.Add(header.Key, header.Value);
+                }
+            }
+
+            return Task.FromResult(responseMessage);
         }
     }
 

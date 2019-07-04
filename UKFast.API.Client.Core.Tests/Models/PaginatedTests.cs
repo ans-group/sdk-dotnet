@@ -15,10 +15,17 @@ namespace UKFast.API.Client.Core.Tests.Models
         [TestMethod]
         public async Task Last_LastPage_ReturnsNull()
         {
-            ClientResponse<IList<ModelBase>> response = UKFastClientTests.GetListResponse(new List<ModelBase>(), 3);
-            response.Body.Metadata.Pagination.CurrentPage = 3;
+            ClientRequestParameters parameters = new ClientRequestParameters()
+            {
+                Pagination = new ClientRequestPagination()
+                {
+                    Page = 3
+                }
+            };
 
-            Paginated<ModelBase> paginated = new Paginated<ModelBase>(null, null, null, response);
+            ClientResponse<IList<ModelBase>> response = UKFastClientTests.GetListResponse(new List<ModelBase>(), 3);
+
+            Paginated<ModelBase> paginated = new Paginated<ModelBase>(null, null, parameters, response);
 
             Paginated<ModelBase> next = await paginated.Next();
 
@@ -28,10 +35,17 @@ namespace UKFast.API.Client.Core.Tests.Models
         [TestMethod]
         public async Task Previous_FirstPage_ReturnsNull()
         {
-            ClientResponse<IList<ModelBase>> response = UKFastClientTests.GetListResponse(new List<ModelBase>(), 3);
-            response.Body.Metadata.Pagination.CurrentPage = 1;
+            ClientRequestParameters parameters = new ClientRequestParameters()
+            {
+                Pagination = new ClientRequestPagination()
+                {
+                    Page = 1
+                }
+            };
 
-            Paginated<ModelBase> paginated = new Paginated<ModelBase>(null, null, null, response);
+            ClientResponse<IList<ModelBase>> response = UKFastClientTests.GetListResponse(new List<ModelBase>(), 3);
+
+            Paginated<ModelBase> paginated = new Paginated<ModelBase>(null, null, parameters, response);
 
             Paginated<ModelBase> previous = await paginated.Previous();
 
@@ -42,33 +56,40 @@ namespace UKFast.API.Client.Core.Tests.Models
         public async Task Previous_NotFirstPage_ReturnsPreviousPage()
         {
             ClientResponse<IList<ModelBase>> paginatedResponse = UKFastClientTests.GetListResponse(new List<ModelBase>(), 3);
-            paginatedResponse.Body.Metadata.Pagination.CurrentPage = 2;
-
             ClientResponse<IList<ModelBase>> mockResponse = UKFastClientTests.GetListResponse(new List<ModelBase>(), 3);
-            mockResponse.Body.Metadata.Pagination.CurrentPage = 1;
 
             IUKFastClient client = Substitute.For<IUKFastClient>();
-            client.GetPaginatedAsync<ModelBase>("testresource", Arg.Any<ClientRequestParameters>()).Returns(Task.Run(() => new Paginated<ModelBase>(client, "testresource", new ClientRequestParameters() { Pagination = new ClientRequestPagination() }, mockResponse)));
+            client.GetPaginatedAsync<ModelBase>("testresource", Arg.Any<ClientRequestParameters>()).Returns(x =>
+            {
+                return Task.Run(() => new Paginated<ModelBase>(client, "testresource", x.ArgAt<ClientRequestParameters>(1), mockResponse));
+            });
 
-            Paginated<ModelBase> paginated = new Paginated<ModelBase>(client, "testresource", new ClientRequestParameters() { Pagination = new ClientRequestPagination() }, paginatedResponse);
+            Paginated<ModelBase> paginated = new Paginated<ModelBase>(client, "testresource", new ClientRequestParameters()
+            {
+                Pagination = new ClientRequestPagination()
+                {
+                    Page = 3
+                }
+            }, paginatedResponse);
+
             Paginated<ModelBase> previous = await paginated.Previous();
 
-            Assert.AreEqual(1, previous.CurrentPage);
+            Assert.AreEqual(2, previous.CurrentPage);
         }
 
         [TestMethod]
         public async Task First_ReturnsFirstPage()
         {
             ClientResponse<IList<ModelBase>> paginatedResponse = UKFastClientTests.GetListResponse(new List<ModelBase>(), 3);
-            paginatedResponse.Body.Metadata.Pagination.CurrentPage = 4;
-
             ClientResponse<IList<ModelBase>> mockResponse = UKFastClientTests.GetListResponse(new List<ModelBase>(), 3);
-            mockResponse.Body.Metadata.Pagination.CurrentPage = 1;
 
             IUKFastClient client = Substitute.For<IUKFastClient>();
-            client.GetPaginatedAsync<ModelBase>("testresource", Arg.Is<ClientRequestParameters>(x => x.Pagination.Page == 1)).Returns(Task.Run(() => new Paginated<ModelBase>(client, "testresource", new ClientRequestParameters() { Pagination = new ClientRequestPagination() }, mockResponse)));
+            client.GetPaginatedAsync<ModelBase>("testresource", Arg.Is<ClientRequestParameters>(x => x.Pagination.Page == 1)).Returns(x =>
+            {
+                return Task.Run(() => new Paginated<ModelBase>(client, "testresource", x.ArgAt<ClientRequestParameters>(1), mockResponse));
+            });
 
-            Paginated<ModelBase> paginated = new Paginated<ModelBase>(client, "testresource", new ClientRequestParameters() { Pagination = new ClientRequestPagination() }, paginatedResponse);
+            Paginated<ModelBase> paginated = new Paginated<ModelBase>(client, "testresource", new ClientRequestParameters(), paginatedResponse);
             Paginated<ModelBase> first = await paginated.First();
 
             Assert.AreEqual(1, first.CurrentPage);
@@ -78,15 +99,15 @@ namespace UKFast.API.Client.Core.Tests.Models
         public async Task Last_ReturnsLastPage()
         {
             ClientResponse<IList<ModelBase>> paginatedResponse = UKFastClientTests.GetListResponse(new List<ModelBase>(), 10);
-            paginatedResponse.Body.Metadata.Pagination.CurrentPage = 5;
-
             ClientResponse<IList<ModelBase>> mockResponse = UKFastClientTests.GetListResponse(new List<ModelBase>(), 10);
-            mockResponse.Body.Metadata.Pagination.CurrentPage = 10;
 
             IUKFastClient client = Substitute.For<IUKFastClient>();
-            client.GetPaginatedAsync<ModelBase>("testresource", Arg.Is<ClientRequestParameters>(x => x.Pagination.Page == 10)).Returns(Task.Run(() => new Paginated<ModelBase>(client, "testresource", new ClientRequestParameters() { Pagination = new ClientRequestPagination() }, mockResponse)));
+            client.GetPaginatedAsync<ModelBase>("testresource", Arg.Is<ClientRequestParameters>(x => x.Pagination.Page == 10)).Returns(x =>
+            {
+                return Task.Run(() => new Paginated<ModelBase>(client, "testresource", x.ArgAt<ClientRequestParameters>(1), mockResponse));
+            });
 
-            Paginated<ModelBase> paginated = new Paginated<ModelBase>(client, "testresource", new ClientRequestParameters() { Pagination = new ClientRequestPagination() }, paginatedResponse);
+            Paginated<ModelBase> paginated = new Paginated<ModelBase>(client, "testresource", new ClientRequestParameters(), paginatedResponse);
             Paginated<ModelBase> last = await paginated.Last();
 
             Assert.AreEqual(10, last.CurrentPage);
@@ -98,7 +119,7 @@ namespace UKFast.API.Client.Core.Tests.Models
             ClientResponse<IList<ModelBase>> paginatedResponse = UKFastClientTests.GetListResponse(new List<ModelBase>(), 10);
             paginatedResponse.Body.Metadata.Pagination.TotalPages = 99;
 
-            Paginated<ModelBase> paginated = new Paginated<ModelBase>(null, "testresource", new ClientRequestParameters() { Pagination = new ClientRequestPagination() }, paginatedResponse);
+            Paginated<ModelBase> paginated = new Paginated<ModelBase>(null, "testresource", new ClientRequestParameters(), paginatedResponse);
 
             Assert.AreEqual(99, paginated.TotalPages);
         }
@@ -107,11 +128,32 @@ namespace UKFast.API.Client.Core.Tests.Models
         public void CurrentPage_ReturnsCurrentPage()
         {
             ClientResponse<IList<ModelBase>> paginatedResponse = UKFastClientTests.GetListResponse(new List<ModelBase>(), 10);
-            paginatedResponse.Body.Metadata.Pagination.CurrentPage = 99;
 
-            Paginated<ModelBase> paginated = new Paginated<ModelBase>(null, "testresource", new ClientRequestParameters() { Pagination = new ClientRequestPagination() }, paginatedResponse);
+            Paginated<ModelBase> paginated = new Paginated<ModelBase>(null, "testresource", new ClientRequestParameters()
+            {
+                Pagination = new ClientRequestPagination()
+                {
+                    Page = 3
+                }
+            }, paginatedResponse);
 
-            Assert.AreEqual(99, paginated.CurrentPage);
+            Assert.AreEqual(3, paginated.CurrentPage);
+        }
+
+        [TestMethod]
+        public void CurrentPage_LessThan1_Returns1()
+        {
+            ClientResponse<IList<ModelBase>> paginatedResponse = UKFastClientTests.GetListResponse(new List<ModelBase>(), 10);
+
+            Paginated<ModelBase> paginated = new Paginated<ModelBase>(null, "testresource", new ClientRequestParameters()
+            {
+                Pagination = new ClientRequestPagination()
+                {
+                    Page = -4
+                }
+            }, paginatedResponse);
+
+            Assert.AreEqual(1, paginated.CurrentPage);
         }
 
         [TestMethod]
@@ -120,7 +162,7 @@ namespace UKFast.API.Client.Core.Tests.Models
             ClientResponse<IList<ModelBase>> paginatedResponse = UKFastClientTests.GetListResponse(new List<ModelBase>(), 10);
             paginatedResponse.Body.Metadata.Pagination.Total = 99;
 
-            Paginated<ModelBase> paginated = new Paginated<ModelBase>(null, "testresource", new ClientRequestParameters() { Pagination = new ClientRequestPagination() }, paginatedResponse);
+            Paginated<ModelBase> paginated = new Paginated<ModelBase>(null, "testresource", new ClientRequestParameters(), paginatedResponse);
 
             Assert.AreEqual(99, paginated.Total);
         }
