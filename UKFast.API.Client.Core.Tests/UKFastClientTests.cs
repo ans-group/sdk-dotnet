@@ -55,37 +55,41 @@ namespace UKFast.API.Client.Core.Tests
         [TestMethod]
         public async Task GetAllAsync_ExpectedCalls()
         {
-            ClientRequestParameters parameters = new ClientRequestParameters()
-            {
-                Pagination = new ClientRequestPagination()
-            };
-
             ClientResponse<IList<ModelBase>> mockPage1Response = GetListResponse(new List<ModelBase>()
             {
                 new ModelBase(),
                 new ModelBase(),
             }, 3);
-            mockPage1Response.Body.Metadata.Pagination.CurrentPage = 1;
 
             ClientResponse<IList<ModelBase>> mockPage2Response = GetListResponse(new List<ModelBase>()
             {
                 new ModelBase(),
                 new ModelBase(),
             }, 3);
-            mockPage2Response.Body.Metadata.Pagination.CurrentPage = 2;
 
             ClientResponse<IList<ModelBase>> mockPage3Response = GetListResponse(new List<ModelBase>()
             {
                 new ModelBase(),
             }, 3);
-            mockPage3Response.Body.Metadata.Pagination.CurrentPage = 3;
 
             IUKFastClient mockClient = Substitute.For<IUKFastClient>();
-            mockClient.GetPaginatedAsync<ModelBase>("testresource", Arg.Is<ClientRequestParameters>(x => x.Pagination.Page == 2)).Returns(Task.Run(() => new Paginated<ModelBase>(mockClient, "testresource", parameters, mockPage2Response)));
-            mockClient.GetPaginatedAsync<ModelBase>("testresource", Arg.Is<ClientRequestParameters>(x => x.Pagination.Page == 3)).Returns(Task.Run(() => new Paginated<ModelBase>(mockClient, "testresource", parameters, mockPage3Response)));
+            mockClient.GetPaginatedAsync<ModelBase>("testresource", Arg.Is<ClientRequestParameters>(x => x.Pagination.Page == 2)).Returns(x =>
+            {
+                return Task.Run(() => new Paginated<ModelBase>(mockClient, "testresource", x.ArgAt<ClientRequestParameters>(1), mockPage2Response));
+            });
+            mockClient.GetPaginatedAsync<ModelBase>("testresource", Arg.Is<ClientRequestParameters>(x => x.Pagination.Page == 3)).Returns(x =>
+            {
+                return Task.Run(() => new Paginated<ModelBase>(mockClient, "testresource", x.ArgAt<ClientRequestParameters>(1), mockPage3Response));
+            });
 
             IUKFastClient client = new TestUKFastClient(null);
-            IList<ModelBase> items = await client.GetAllAsync(async (ClientRequestParameters p) => new Paginated<ModelBase>(mockClient, "testresource", p, mockPage1Response), parameters);
+            IList<ModelBase> items = await client.GetAllAsync(async (ClientRequestParameters p) => new Paginated<ModelBase>(mockClient, "testresource", p, mockPage1Response), new ClientRequestParameters()
+            {
+                Pagination = new ClientRequestPagination()
+                {
+                    Page = 1
+                }
+            });
 
             Assert.AreEqual(5, items.Count);
         }
@@ -93,26 +97,25 @@ namespace UKFast.API.Client.Core.Tests
         [TestMethod]
         public async Task GetAllAsync_EmptyData_ExpectedCalls()
         {
-            ClientRequestParameters parameters = new ClientRequestParameters()
-            {
-                Pagination = new ClientRequestPagination()
-            };
-
             ClientResponse<IList<ModelBase>> mockPage1Response = GetListResponse(new List<ModelBase>(), 3);
-            mockPage1Response.Body.Metadata.Pagination.CurrentPage = 1;
-
             ClientResponse<IList<ModelBase>> mockPage2Response = GetListResponse(new List<ModelBase>(), 3);
-            mockPage2Response.Body.Metadata.Pagination.CurrentPage = 2;
-
             ClientResponse<IList<ModelBase>> mockPage3Response = GetListResponse(new List<ModelBase>(), 3);
-            mockPage3Response.Body.Metadata.Pagination.CurrentPage = 3;
 
             IUKFastClient mockClient = Substitute.For<IUKFastClient>();
-            mockClient.GetPaginatedAsync<ModelBase>("testresource", Arg.Is<ClientRequestParameters>(x => x.Pagination.Page == 2)).Returns(Task.Run(() => new Paginated<ModelBase>(mockClient, "testresource", parameters, mockPage2Response)));
-            mockClient.GetPaginatedAsync<ModelBase>("testresource", Arg.Is<ClientRequestParameters>(x => x.Pagination.Page == 3)).Returns(Task.Run(() => new Paginated<ModelBase>(mockClient, "testresource", parameters, mockPage3Response)));
+            mockClient.GetPaginatedAsync<ModelBase>("testresource", Arg.Is<ClientRequestParameters>(x => x.Pagination.Page == 2)).Returns(x =>
+            {
+                return Task.Run(() => new Paginated<ModelBase>(mockClient, "testresource", x.ArgAt<ClientRequestParameters>(1), mockPage2Response));
+            });
+            mockClient.GetPaginatedAsync<ModelBase>("testresource", Arg.Is<ClientRequestParameters>(x => x.Pagination.Page == 3)).Returns(x =>
+            {
+                return Task.Run(() => new Paginated<ModelBase>(mockClient, "testresource", x.ArgAt<ClientRequestParameters>(1), mockPage3Response));
+            });
 
             IUKFastClient client = new TestUKFastClient(null);
-            IList<ModelBase> items = await client.GetAllAsync(async (ClientRequestParameters p) => new Paginated<ModelBase>(mockClient, "testresource", p, mockPage1Response), parameters);
+            IList<ModelBase> items = await client.GetAllAsync(async (ClientRequestParameters p) => new Paginated<ModelBase>(mockClient, "testresource", p, mockPage1Response), new ClientRequestParameters()
+            {
+                Pagination = new ClientRequestPagination()
+            });
 
             Assert.AreEqual(0, items.Count);
         }
@@ -120,26 +123,22 @@ namespace UKFast.API.Client.Core.Tests
         [TestMethod]
         public async Task GetAllAsync_NullData_ExpectedCalls()
         {
-            ClientRequestParameters parameters = new ClientRequestParameters()
-            {
-                Pagination = new ClientRequestPagination()
-            };
-
             ClientResponse<IList<ModelBase>> mockPage1Response = GetListResponse(null, 3);
-            mockPage1Response.Body.Metadata.Pagination.CurrentPage = 1;
-
             ClientResponse<IList<ModelBase>> mockPage2Response = GetListResponse(null, 3);
-            mockPage2Response.Body.Metadata.Pagination.CurrentPage = 2;
-
             ClientResponse<IList<ModelBase>> mockPage3Response = GetListResponse(null, 3);
-            mockPage3Response.Body.Metadata.Pagination.CurrentPage = 3;
 
             IUKFastClient mockClient = Substitute.For<IUKFastClient>();
-            mockClient.GetPaginatedAsync<ModelBase>("testresource", Arg.Is<ClientRequestParameters>(x => x.Pagination.Page == 2)).Returns(Task.Run(() => new Paginated<ModelBase>(mockClient, "testresource", parameters, mockPage2Response)));
-            mockClient.GetPaginatedAsync<ModelBase>("testresource", Arg.Is<ClientRequestParameters>(x => x.Pagination.Page == 3)).Returns(Task.Run(() => new Paginated<ModelBase>(mockClient, "testresource", parameters, mockPage3Response)));
+            mockClient.GetPaginatedAsync<ModelBase>("testresource", Arg.Is<ClientRequestParameters>(x => x.Pagination.Page == 2)).Returns(x =>
+            {
+                return Task.Run(() => new Paginated<ModelBase>(mockClient, "testresource", x.ArgAt<ClientRequestParameters>(1), mockPage2Response));
+            });
+            mockClient.GetPaginatedAsync<ModelBase>("testresource", Arg.Is<ClientRequestParameters>(x => x.Pagination.Page == 3)).Returns(x =>
+            {
+                return Task.Run(() => new Paginated<ModelBase>(mockClient, "testresource", x.ArgAt<ClientRequestParameters>(1), mockPage3Response));
+            });
 
             IUKFastClient client = new TestUKFastClient(null);
-            IList<ModelBase> items = await client.GetAllAsync(async (ClientRequestParameters p) => new Paginated<ModelBase>(mockClient, "testresource", p, mockPage1Response), parameters);
+            IList<ModelBase> items = await client.GetAllAsync(async (ClientRequestParameters p) => new Paginated<ModelBase>(mockClient, "testresource", p, mockPage1Response), null);
 
             Assert.AreEqual(0, items.Count);
         }
@@ -148,10 +147,7 @@ namespace UKFast.API.Client.Core.Tests
         public async Task GetAllAsync_NullParameters_ExpectedConfiguredParameters()
         {
             ClientResponse<IList<ModelBase>> mockPage1Response = GetListResponse(null, 2);
-            mockPage1Response.Body.Metadata.Pagination.CurrentPage = 1;
-
             ClientResponse<IList<ModelBase>> mockPage2Response = GetListResponse(null, 2);
-            mockPage2Response.Body.Metadata.Pagination.CurrentPage = 2;
 
             IUKFastClient mockClient = Substitute.For<IUKFastClient>();
             mockClient.GetPaginatedAsync<ModelBase>("testresource", Arg.Is<ClientRequestParameters>(x => x.Pagination.Page == 2 && x.Pagination.PerPage == 99)).Returns(Task.Run(() => new Paginated<ModelBase>(mockClient, "testresource", null, mockPage2Response)));
