@@ -46,24 +46,15 @@ namespace UKFast.API.Client
             List<T> items = new List<T>();
 
             Paginated<T> p = await func(parameters);
-            if (p.Items?.Count > 0)
+
+            while (p != null)
             {
-                items.AddRange(p.Items);
-            }
-
-            while (true)
-            {
-                p = await p.Next();
-
-                if (p == null)
-                {
-                    break;
-                }
-
                 if (p.Items?.Count > 0)
                 {
                     items.AddRange(p.Items);
                 }
+
+                p = await p.Next();
             }
 
             return items;
