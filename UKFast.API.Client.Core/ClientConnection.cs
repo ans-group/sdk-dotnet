@@ -8,7 +8,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
-using System.Xml.Linq;
+using UKFast.API.Client.Json;
 using UKFast.API.Client.Models;
 using UKFast.API.Client.Request;
 using UKFast.API.Client.Response;
@@ -112,7 +112,7 @@ namespace UKFast.API.Client
         }
 
         /// <summary>
-        /// Invokes a service request asyncronously
+        /// Invokes a service request asynchronously
         /// </summary>
         /// <param name="request">Instance of ClientRequest object</param>
         public async Task<ClientResponse<T>> InvokeAsync<T>(string resource, ClientRequestMethod method, object body = null)
@@ -126,7 +126,7 @@ namespace UKFast.API.Client
         }
 
         /// <summary>
-        /// Invokes a service request asyncronously
+        /// Invokes a service request asynchronously
         /// </summary>
         /// <param name="request">Instance of ClientRequest object</param>
         public async Task<ClientResponse<T>> InvokeAsync<T>(ClientRequest request)
@@ -146,11 +146,11 @@ namespace UKFast.API.Client
             ClientResponseBody<T> body = null;
             try
             {
-                body = Newtonsoft.Json.JsonConvert.DeserializeObject<ClientResponseBody<T>>(responseBody, new Newtonsoft.Json.JsonSerializerSettings() { NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore });
-            }
-            catch
-            {
-                throw new Exception.UKFastClientRequestException((int)response.StatusCode, responseBody);
+				body = Newtonsoft.Json.JsonConvert.DeserializeObject<ClientResponseBody<T>>(responseBody, new UKFastJsonConverter());
+			}
+            catch (System.Exception ex)
+			{
+				throw new Exception.UKFastClientRequestException((int)response.StatusCode, responseBody, ex);
             }
 
             return new ClientResponse<T>()
