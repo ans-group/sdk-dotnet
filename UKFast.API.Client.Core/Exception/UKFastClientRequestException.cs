@@ -20,9 +20,13 @@ namespace UKFast.API.Client.Exception
         public UKFastClientRequestException(int statusCode, string rawResponse) : base(GetErrorMessage(statusCode, rawResponse))
         {
             this.StatusCode = statusCode;
+		}
+
+        public UKFastClientRequestException(int statusCode, string rawResponse, System.Exception innerException) : base(GetErrorMessage(statusCode, rawResponse), innerException)
+        {
         }
 
-        private static string GetErrorMessage(int statusCode, IEnumerable<ClientResponseError> errors)
+		private static string GetErrorMessage(int statusCode, IEnumerable<ClientResponseError> errors)
         {
             return $"Request failed with status code [{statusCode}]: " + ((errors != null) ? string.Join("; ", errors.Select(x => x.ToString())) : null);
         }

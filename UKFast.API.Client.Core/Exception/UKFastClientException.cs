@@ -8,5 +8,6 @@ namespace UKFast.API.Client.Exception
     {
         public UKFastClientException() { }
         public UKFastClientException(string message) : base(message) { }
-    }
+        public UKFastClientException(string message, System.Exception innerException) : base(message, innerException) { }
+	}
 }
