@@ -148,9 +148,9 @@ namespace UKFast.API.Client
             {
                 body = Newtonsoft.Json.JsonConvert.DeserializeObject<ClientResponseBody<T>>(responseBody, new Newtonsoft.Json.JsonSerializerSettings() { NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore });
             }
-            catch
+            catch (System.Exception ex)
             {
-                throw new Exception.UKFastClientRequestException((int)response.StatusCode, responseBody);
+                throw new Exception.UKFastClientRequestException((int)response.StatusCode, responseBody, ex);
             }
 
             return new ClientResponse<T>()

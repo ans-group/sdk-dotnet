@@ -17,7 +17,18 @@ namespace UKFast.API.Client.Exception
             this.Errors = errors;
         }
 
+        public UKFastClientRequestException(int statusCode, IEnumerable<ClientResponseError> errors, System.Exception innerEx) : base(GetErrorMessage(statusCode, errors), innerEx)
+        {
+            this.StatusCode = statusCode;
+            this.Errors = errors;
+        }
+
         public UKFastClientRequestException(int statusCode, string rawResponse) : base(GetErrorMessage(statusCode, rawResponse))
+        {
+            this.StatusCode = statusCode;
+        }
+
+        public UKFastClientRequestException(int statusCode, string rawResponse, System.Exception innerEx) : base(GetErrorMessage(statusCode, rawResponse), innerEx)
         {
             this.StatusCode = statusCode;
         }

@@ -33,10 +33,12 @@ namespace UKFast.API.Client.Core.Tests.Exception
         [TestMethod]
         public void UKFastClientRequestException_SetsProperties()
         {
-            UKFastClientRequestException ex = new UKFastClientRequestException(500, new List<ClientResponseError>() { new ClientResponseError() });
+            var innerEx = new System.Exception("test");
+            UKFastClientRequestException ex = new UKFastClientRequestException(500, new List<ClientResponseError>() { new ClientResponseError() }, innerEx);
 
             Assert.AreEqual(500, ex.StatusCode);
             Assert.AreEqual(1, ex.Errors.Count());
+            Assert.AreEqual(innerEx, ex.InnerException);
         }
     }
 }
