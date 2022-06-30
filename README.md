@@ -4,7 +4,7 @@
 
 This is the base client for interacting with ANS APIs from .NET applications targetting .NET Standard 2.0.
 
-We strongly recommend against using this client directly, and instead using ANS .NET SDKs available on Github [here](https://github.com/ANS?utf8=%E2%9C%93&q=sdk-dotnet)
+We strongly recommend against using this client directly, and instead using ANS .NET SDKs available on Github [here](https://github.com/ans-group?utf8=%E2%9C%93&q=sdk-dotnet)
 
 ### Basic usage
 
