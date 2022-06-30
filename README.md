@@ -22,5 +22,5 @@ ANSClient client = new ANSClient(new ClientConnection("yourapikeyhere"));
 And away we go:
 
 ```csharp
-var zone = await client.GetAsync<dynamic>("/safedns/v1/zones/ANS.co.uk");
+var zone = await client.GetAsync<dynamic>("/safedns/v1/zones/ans.co.uk");
 ```
