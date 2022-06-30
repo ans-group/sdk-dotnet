@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -9,7 +9,7 @@
     <PackageTags>ans, sdk, client</PackageTags>
     <SignAssembly>false</SignAssembly>
     <PackageProjectUrl>https://github.com/ans-group/sdk-dotnet</PackageProjectUrl>
-    <PackageLicenseUrl>https://raw.githubusercontent.com/ans-group/sdk-dotnet/master/LICENSE</PackageLicenseUrl>
+	<PackageLicenseFile>LICENSE</PackageLicenseFile>
     <Copyright />
     <Description>Core client for interacting with ANS products and services</Description>
     <AssemblyVersion>1.0.3.0</AssemblyVersion>
@@ -23,6 +23,9 @@
 
   <ItemGroup>
     <PackageReference Update="NETStandard.Library" Version="2.0.3" />
+  </ItemGroup>
+  <ItemGroup>
+	<None Include="../LICENSE" Pack="true" PackagePath=""/>
   </ItemGroup>
 
 </Project>
